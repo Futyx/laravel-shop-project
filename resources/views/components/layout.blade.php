@@ -15,7 +15,6 @@
 
 <body class=" dark:bg-slate-700">
 	@include('layouts.navigation')
-
 	<main>
 		{{ $slot }}
 	</main>
