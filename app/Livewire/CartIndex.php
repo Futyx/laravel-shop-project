@@ -15,7 +15,6 @@ class CartIndex extends Component // تغییر نام کلاس به CartIndex
     {
         $cart = collect(session()->get('cart', []));
 
-        // پیدا کردن سطر محصول بر اساس productId
         $index = $cart->search(fn($row) => ($row['product_id'] ?? 0) === $productId);
 
         if ($index !== false) {
@@ -30,10 +29,26 @@ class CartIndex extends Component // تغییر نام کلاس به CartIndex
             }
 
             session()->put('cart', array_values($items)); // ذخیره آرایه تمیز در سشن
-            
+            $this->dispatch('cart-updated');
+            $this->dispatch('notify', type: 'success', message: 'تعداد سبد خرید به‌روز شد.');
             // فراخوانی رندر مجدد
             // نیازی به $this->js('$refresh') نیست زیرا رندر کردن متد updateQuantity View را به روز می‌کند
         }
+    }
+
+    public function remove(int $productIdToRemove): void
+    {
+        $cart = collect(session()->get('cart', []));
+
+        // 1. حذف آیتم از سشن بر اساس شناسه محصول
+        $newCart = $cart->reject(fn($item) => ($item['product_id'] ?? 0) === $productIdToRemove);
+        session()->put('cart', $newCart->values()->all());
+
+        // 2. ارسال رویداد برای به‌روزرسانی سایر بخش‌های UI
+        $this->dispatch('cart-updated');
+        $this->dispatch('notify', type: 'success', message: 'محصول با موفقیت از سبد حذف شد.');
+
+        // 3. رندر مجدد: Livewire به طور خودکار متد render را فراخوانی می‌کند.
     }
 
     /**
@@ -53,28 +68,34 @@ class CartIndex extends Component // تغییر نام کلاس به CartIndex
         foreach ($cart as $row) {
             $productId = $row['product_id'];
             $quantity = $row['quantity'];
-            
+
+
             $product = $products->get($productId);
 
             // اگر محصولی در دیتابیس موجود بود، داده‌ها را غنی‌سازی کن
             if ($product) {
                 // فرض بر این است که قیمت در ستون 'price' مدل Product ذخیره شده است
-                $price = $product->price; 
+                $price = $product->price;
                 $subtotal = $price * $quantity;
                 $total += $subtotal;
+                $imageUrl = $product->getFirstMediaUrl('default', 'thumb') // 'default' مجموعه و 'thumb' تبدیل است.
+                   ; // تصویر پیش‌فرض
 
+                    // dd($imageUrl);
                 $items[] = [
                     'product_id' => $productId,
                     'quantity' => $quantity,
                     'price' => $price,
                     'subtotal' => $subtotal,
-                    'product' => $product, // ارسال مدل کامل محصول
+                    'product' => $product,
+                    'image_url' => $imageUrl,
+
                 ];
             }
         }
 
-        // تغییر نام View به livewire.cart-index برای هماهنگی با نام کلاس (CartIndex)
-        return view('livewire.cart-index', [ 
+
+        return view('livewire.cart-index', [
             'items' => collect($items),
             'total' => $total,
         ]);

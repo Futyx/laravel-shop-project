@@ -37,7 +37,6 @@
     </div>
 
     <script>
-        // Logic for Notification Display in Alpine.js
         function notificationHandler() {
             return {
                 show: false,
@@ -46,7 +45,6 @@
                 timeout: null,
 
                 init() {
-                    // Listen for the 'notify' event dispatched by Livewire components
                     window.addEventListener('notify', e => {
                         this.message = e.detail.message;
                         this.type = e.detail.type || 'success';
@@ -55,7 +53,7 @@
                         clearTimeout(this.timeout);
                         this.timeout = setTimeout(() => {
                             this.show = false;
-                        }, 3000); // Hide after 3 seconds
+                        }, 3000); 
                     });
                 }
             }

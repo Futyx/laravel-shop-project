@@ -1,6 +1,5 @@
 @props(['product'])
 
-{{-- اعمال تابع format_price و to_farsi_numbers را در اینجا انجام می‌دهیم --}}
 
 <div class="p-2 border rounded shadow-md flex flex-col h-full">
    
@@ -8,7 +7,7 @@
 
 
 
-        <img src="{{ $product->getFirstImageUrl() }}" alt="{{ $product->title }}" class="w-full h-36 object-contain mb-2 rounded-t">
+        <img src="{{ $product->getFirstMediaUrl('product_images') }}" alt="{{ $product->title }}" class="w-full h-36 object-contain image-cover m-1 mb-2 rounded-t ">
 
         <div class="min-h-[2rem] mb-1">
             <p class="font-semibold text-gray-800 line-clamp-2">{{ $product->title }}</p>

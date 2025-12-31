@@ -11,7 +11,7 @@ class ProductController extends Controller
     {
         $products = Product::all();
 
-        return view('guest.home', ['products' => $products]);
+        return view('home.index', ['products' => $products]);
     }
 
     public function mount(Product $product)

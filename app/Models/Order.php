@@ -12,13 +12,31 @@ class Order extends Model
     protected $guarded = [
         'id'
     ];
+    protected $fillable = [
+        'user_id',
+        'total_amount',
+        'status',
+        'payment_status',
+        'phone', 
+        'email', 
+        'transaction_id',
+        'tracking_code',
+    ];
+    public static function generateTrackingCode()
+    {
+        do {
+            $code = rand(10000000, 99999999);
+        } while (self::where('tracking_code', $code)->exists());
+
+        return $code;
+    }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-     public function items(): HasMany
+    public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }

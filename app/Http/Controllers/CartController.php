@@ -6,24 +6,16 @@ use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Services\CartService;
 
 class CartController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request, CartService $cartService): View
     {
-        $cart = collect($request->session()->get('cart', []));
-        $productIds = $cart->pluck('product_id')->all();
-        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+        $cart = $cartService->getDetails();
 
-        $items = $cart->map(function ($row) use ($products) {
-            $product = $products->get($row['product_id']);
-            return [
-                'product' => $product,
-                'quantity' => $row['quantity'],
-                'price' => $product?->price ?? 0,
-                'subtotal' => ($product?->price ?? 0) * $row['quantity'],
-            ];
-        });
+        $items       = $cart['items'];      
+        $totalAmount = $cart['totalAmount'];
 
         $total = $items->sum('subtotal');
 
@@ -66,10 +58,34 @@ class CartController extends Controller
 
         return back()->with('success', 'محصول به سبد انتظار پرداخت اضافه شد.');
     }
-    public function remove(Request $request)
+    public function remove(Request $request): RedirectResponse
     {
+        $data = $request->validate([
+            'product_id' => ['required', 'integer', 'exists:products,id'],
+        ]);
+
+        $productId = (int)$data['product_id'];
+
+        // 2. دریافت سبد خرید از سشن
         $cart = $request->session()->get('cart', []);
-        echo($cart);
+
+        // 3. پیدا کردن و حذف آیتم
+        // ما از Collection استفاده می‌کنیم تا کار با آرایه راحت‌تر باشد
+        $cartCollection = collect($cart);
+
+        // findIndex یک متد Collection است که index آیتم مطابق شرط را پیدا می‌کند
+        $existingIndex = $cartCollection->search(function ($item) use ($productId) {
+            return $item['product_id'] === $productId;
+        });
+
+        if ($existingIndex !== false) {
+            // آیتم را بر اساس index آن حذف می‌کنیم
+            $cartCollection->splice($existingIndex, 1);
+        }
+
+        // 4. ذخیره مجدد سبد خرید در سشن و ری‌ایندکس کردن کلیدها
+        $request->session()->put('cart', $cartCollection->values()->all());
+
+        return back()->with('success', 'محصول با موفقیت از سبد خرید حذف شد.');
     }
 }
-

@@ -21,8 +21,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
-        'password',
+        'phone',        
+        'email',        
+        'password', 
+        
     ];
     public function payments(): HasMany
     {

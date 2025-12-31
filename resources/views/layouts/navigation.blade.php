@@ -3,7 +3,7 @@
     <nav>
         <div>
             <div class="text-[10px] lg:text-[12px] bg-[rgb(224,224,224)]  flex items-center justify-center gap-x-4 lg:items-start lg:justify-start lg:pr-2  border-b border-gray-300 py-1">
-                <a href="/guest" class="hidden  lg:block md:block ">صفحه اصلی</a>
+                <a href="/home" class="hidden  lg:block md:block ">صفحه اصلی</a>
                 <a href="/terms-and-conditions" class=" md:pr-2 md:border-r md:border-gray-400 ">قوانین و شرایط سایت</a>
                 <a href="#" class="pr-2 border-r border-gray-400"> سوالات متداول</a>
                 <a href="#" class="pr-2 border-r border-gray-400">تماس با ما</a>
@@ -21,7 +21,7 @@
 
             </div>
             <div>
-                <a href="/guest">
+                <a href="/home">
                     <img class="w-36 lg:w-[320px]  " src="{{ asset( 'images/logo.png')}}" alt="لوگوی سایت">
                 </a>
             </div>
@@ -45,7 +45,54 @@
                     <div class="rounded-full flex items-center p-2 gap-1 border border-gray-300"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.2" stroke="currentColor" class="size-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                         </svg>
-                        <p class="text-[13px]">ورود / ثبت نام</p>
+                        <div class="hidden sm:flex sm:items-center sm:ms-6">
+
+                            @auth
+                            <x-dropdown align="right" width="48">
+                                <x-slot name="trigger">
+                                    <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                                        <div>{{ Auth::user()->name }}</div>
+
+                                        <div class="ms-1">
+                                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </x-slot>
+
+                                <x-slot name="content">
+                                    <x-dropdown-link :href="route('profile.edit')">
+                                        {{ __('Profile') }}
+                                    </x-dropdown-link>
+
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <x-dropdown-link :href="route('logout')"
+                                            onclick="event.preventDefault();
+                                    this.closest('form').submit();">
+                                            {{ __('Log Out') }}
+                                        </x-dropdown-link>
+                                    </form>
+                                </x-slot>
+                            </x-dropdown>
+                            @endauth
+
+                            @guest
+                            <div class="space-x-2">
+                                <a href="{{ route('login') }}" class="text-gray-600 ml-1 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 font-medium transition duration-150">
+                                    ورود
+                                </a>
+<span>/</span>
+                                @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="ms-4 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 font-medium transition duration-150">
+                                    ثبت نام
+                                </a>
+                                @endif
+                            </div>
+                            @endguest
+
+                        </div>
                     </div>
                     <div class="px-2 border-r border-gray-300">
                         @livewire('cart.cart-badge')
@@ -69,6 +116,8 @@
 
 
             <x-navigation.category-dropdown />
+            <x-navigation.navbar-links />
+
             <div class="flex gap-1 mt-1 ">
 
                 <a href="#" class="bg-blue-200 text-blue-500 h-[38px] text-[14px] px-2 text-center flex items-center justify-center">

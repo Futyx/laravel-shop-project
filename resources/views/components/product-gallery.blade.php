@@ -1,4 +1,4 @@
-@props(['product'])
+<!-- @props(['product'])
 
 @php
     $images = $product->getAllImages();
@@ -28,4 +28,4 @@
 </div>
 
 
-
+ -->

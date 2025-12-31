@@ -52,7 +52,7 @@ class ProductResource extends Resource
                     ->maxLength(255)
                     ->default(null),
                 SpatieMediaLibraryFileUpload::make('images') 
-                    ->label('تصاویر محصول')
+                    ->label('images')
                     ->collection('product_images')
                     ->multiple()
                     ->reorderable()
@@ -79,9 +79,9 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('images')
-                    ->label('تصویر')
+                    ->label('images')
                     ->collection('product_images')
-                    ->conversion('thumb')
+                    // ->conversion('thumb')
                     ->size(60),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),

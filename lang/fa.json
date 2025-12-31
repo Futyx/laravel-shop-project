@@ -15,6 +15,7 @@
     "Dashboard": "داشبورد",
     "Delete Account": "حذف حساب کاربری",
     "Email": "ایمیل",
+    "Phone": "شماره تماس",
     "email": ":Attribute باید یک ایمیل معتبر باشد.",
     "Email Password Reset Link": "ارسال لینک بازیابی رمزعبور از طریق ایمیل",
     "Encrypted environment file already exists.": "فایل env رمزگذاری شده از قبل وجود دارد.",
