@@ -1,46 +1,36 @@
 <x-app-layout>
 
 
-<div class="mt-2 px-4  lg:flex ">
-    <div class="hidden  lg:block w-52 text-[14px] font-semibold text-wrap p-4">
-        <div class="border p-4 shadow-sm ">
-            <p class="bg-red-200 p-1">فیلتر بر اساس وضعیت موجودی</p>
+<main class="mt-2 px-4 lg:flex">
+    <aside class="hidden lg:block w-52 text-[14px] font-semibold text-wrap p-4" aria-label="فیلتر محصولات">
+        <div class="border p-4 shadow-sm">
+            <h2 class="bg-red-200 p-1">فیلتر بر اساس وضعیت موجودی</h2>
             <div class="mt-2">
                 <div>
-                    <input type="checkbox" id="myCheckbox" name="myOption" class="h-3 w-3 bg-gray-100 border-gray-200 border-2">
-                    <label for="myCheckbox">فروش ویژه</label>
+                    <input type="checkbox" id="specialSale" name="specialSale" class="h-3 w-3 bg-gray-100 border-gray-200 border-2">
+                    <label for="specialSale">فروش ویژه</label>
                 </div>
                 <div class="mt-2">
-                    <input type="checkbox" id="myCheckbox" name="myOption" class="h-3 w-3 bg-gray-100 border-gray-200 border-2">
-                    <label for="myCheckbox">موجود در انبار</label>
+                    <input type="checkbox" id="inStock" name="inStock" class="h-3 w-3 bg-gray-100 border-gray-200 border-2">
+                    <label for="inStock">موجود در انبار</label>
                 </div>
             </div>
         </div>
         <div class="border p-4 shadow-sm mt-6">
-            <p class="bg-red-200 p-1">فیلتر بر اساس قیمت</p>
-
-
+            <h2 class="bg-red-200 p-1">فیلتر بر اساس قیمت</h2>
         </div>
-    </div>
-    <div>
+    </aside>
+    <div class="flex-1">
         <div>
             <x-product-header />
-
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-[14px]">
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-4 text-[14px]" aria-label="لیست محصولات">
             @foreach ($products as $product)
-
-
-            <x-product-card :product="$product" />
-
+                <x-product-card :product="$product" />
             @endforeach
-
-
-        </div>
+        </section>
     </div>
-
-
-</div>
+</main>
 
 
 <footer>
@@ -56,8 +46,8 @@
         </div>
     </div>
     <div class="bg-red-100 py-12">
-        <div class="w-[380px] m-auto ">
-            <img src="{{ asset('images/logo.png') }}" alt="logo">
+        <div class="w-full max-w-[380px] m-auto px-4">
+            <img src="{{ asset('images/logo.png') }}" alt="لوگوی چیزمارت - فروشگاه اینترنتی محصولات آرایشی و بهداشتی" title="چیزمارت" class="w-full h-auto">
         </div>
         <div class="p-4  text-[14px] mt-8">
             <p class="hyphens-auto"> <span class="font-semibold">چیزمارت</span>، یک فروشگاه اینترنتی تخصصی در حوزه محصولات<span class="font-semibold">آرایشی و بهداشتی و خوراکی‌های خاص خارجی </span> است که با هدف ایجاد تجربه‌ای متفاوت از خرید آنلاین، فعالیت خود را آغاز کرده است. ما در چیزمارت تلاش کرده‌ایم مجموعه‌ای متنوع و

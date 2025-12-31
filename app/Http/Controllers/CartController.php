@@ -34,9 +34,6 @@ class CartController extends Controller
 
         $cart = $request->session()->get('cart', []);
 
-
-        // $cart = collect($request->session()->get('cart', []));
-
         $existingIndex = -1;
         foreach ($cart as $index => $item) {
             if ($item['product_id'] === $productId) {
@@ -46,7 +43,6 @@ class CartController extends Controller
         }
 
         if ($existingIndex !== -1) {
-            // آیتم مستقیماً در آرایه PHP تغییر داده می‌شود (بدون خطای Collection)
             $cart[$existingIndex]['quantity'] += $quantity;
         } else {
             $cart[] = [
@@ -54,7 +50,7 @@ class CartController extends Controller
                 'quantity' => $quantity,
             ];
         }
-        $request->session()->put('cart', array_values($cart)); // استفاده از array_values برای اطمینان از آرایه تمیز
+        $request->session()->put('cart', array_values($cart));
 
         return back()->with('success', 'محصول به سبد انتظار پرداخت اضافه شد.');
     }
@@ -65,25 +61,16 @@ class CartController extends Controller
         ]);
 
         $productId = (int)$data['product_id'];
-
-        // 2. دریافت سبد خرید از سشن
         $cart = $request->session()->get('cart', []);
-
-        // 3. پیدا کردن و حذف آیتم
-        // ما از Collection استفاده می‌کنیم تا کار با آرایه راحت‌تر باشد
         $cartCollection = collect($cart);
-
-        // findIndex یک متد Collection است که index آیتم مطابق شرط را پیدا می‌کند
         $existingIndex = $cartCollection->search(function ($item) use ($productId) {
             return $item['product_id'] === $productId;
         });
 
         if ($existingIndex !== false) {
-            // آیتم را بر اساس index آن حذف می‌کنیم
             $cartCollection->splice($existingIndex, 1);
         }
 
-        // 4. ذخیره مجدد سبد خرید در سشن و ری‌ایندکس کردن کلیدها
         $request->session()->put('cart', $cartCollection->values()->all());
 
         return back()->with('success', 'محصول با موفقیت از سبد خرید حذف شد.');

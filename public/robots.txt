@@ -1,2 +1,23 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Sitemap
+Sitemap: /sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /cart/
+Disallow: /payment/
+Disallow: /storage/
+Disallow: /vendor/
+
+# Allow important resources
+Allow: /css/
+Allow: /js/
+Allow: /images/
+Allow: /build/
+
+# Crawl-delay (optional, adjust as needed)
+Crawl-delay: 1

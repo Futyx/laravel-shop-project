@@ -1,6 +1,6 @@
 <div>
     <button wire:click="add" wire:loading.attr="disabled" wire:target="add"
-        class="w-full bg-blue-600  font-semibold text-white py-2 rounded hover:bg-blue-700 transition duration-150">
+        class="w-full bg-blue-600 text-[16px] font-semibold text-white py-2 rounded hover:bg-blue-700 transition duration-150">
         <span wire:loading.remove wire:target="add">افزودن به سبد خرید</span>
         <svg wire:loading wire:target="add" class="animate-spin h-4 w-4 text-white"
             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">

@@ -8,6 +8,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StaticPageController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\RobotsController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -25,7 +27,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
-Route::get('/verify/payment', [PaymentController::class, 'verify'])->name('payment.verify');
 
 
 Route::get('/', [HomeController::class, 'show']);
@@ -42,5 +43,11 @@ Route::get('/payment/pay/{order}', [PaymentController::class, 'pay'])->name('pay
  Route::any('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 //product
 Route::get('/product/{product}', [ProductController::class, 'mount'])->name('product.show');
+
+// Sitemap
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+// Robots.txt
+Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');
 
 require __DIR__.'/auth.php';

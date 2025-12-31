@@ -63,6 +63,7 @@ class CartIndex extends Component // تغییر نام کلاس به CartIndex
         // شناسه تمام محصولات برای کوئری به دیتابیس
         $productIds = $cart->pluck('product_id')->unique()->toArray();
         // بارگذاری تمام مدل‌های محصول مورد نیاز یکجا
+        // Note: Spatie Media Library loads media automatically, no need to eager load
         $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
 
         foreach ($cart as $row) {
@@ -74,14 +75,18 @@ class CartIndex extends Component // تغییر نام کلاس به CartIndex
 
             // اگر محصولی در دیتابیس موجود بود، داده‌ها را غنی‌سازی کن
             if ($product) {
-                // فرض بر این است که قیمت در ستون 'price' مدل Product ذخیره شده است
                 $price = $product->price;
                 $subtotal = $price * $quantity;
                 $total += $subtotal;
-                $imageUrl = $product->getFirstMediaUrl('default', 'thumb') // 'default' مجموعه و 'thumb' تبدیل است.
-                   ; // تصویر پیش‌فرض
-
-                    // dd($imageUrl);
+                
+                // Get image URL - check media directly
+                $media = $product->getFirstMedia('product_images');
+                if ($media) {
+                    $imageUrl = $media->getUrl();
+                } else {
+                    $imageUrl = asset('images/no-image.svg');
+                }
+                
                 $items[] = [
                     'product_id' => $productId,
                     'quantity' => $quantity,
@@ -89,7 +94,6 @@ class CartIndex extends Component // تغییر نام کلاس به CartIndex
                     'subtotal' => $subtotal,
                     'product' => $product,
                     'image_url' => $imageUrl,
-
                 ];
             }
         }

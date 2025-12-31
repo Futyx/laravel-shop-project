@@ -12,8 +12,14 @@
 
         <div class="flex items-center gap-4 p-2 w-full   border-b-2 border-red-200">
 
-            <div>
-                <img class="w-16 h-16 object-cover flex-2" src="{{ $item['image_url']}}" alt="{{ $item['product']?->title }}">
+            <div class="flex-shrink-0">
+                <img 
+                    class="w-16 h-16 object-cover rounded" 
+                    src="{{ $item['image_url'] ?? asset('images/no-image.svg') }}" 
+                    alt="{{ $item['product']?->title ?? 'محصول' }}"
+                    onerror="this.src='{{ asset('images/no-image.svg') }}'"
+                    loading="lazy"
+                >
             </div>
 
             <div class=" w-full flex-1">

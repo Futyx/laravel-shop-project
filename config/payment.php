@@ -23,16 +23,6 @@ return [
     |
     */
     'drivers' => [
-        'zarinpal' => [
-            // Fill in the credentials here.
-            'apiPurchaseUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentRequest.json',
-            'apiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/',
-            'apiVerificationUrl' => 'https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json',
-            'merchantId' => env('ZARINPAL_MERCHANT_ID'),
-            'callbackUrl' => 'http://127.0.0.1:8000/payment/callback',
-            'description' => 'payment in ' . config('app.name'),
-            'sandbox'    => env('ZARINPAL_SANDBOX', false),
-        ],
         'local' => [
             'callbackUrl' => '/callback',
             'title' => 'درگاه پرداخت تست',
@@ -340,10 +330,12 @@ return [
             'zaringateApiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/:authority/ZarinGate',
             'zaringateApiVerificationUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
 
-            'mode' => 'normal', // can be normal, sandbox, zaringate
-            'merchantId' => '',
-            'callbackUrl' => 'http://yoursite.com/path/to',
-            'description' => 'payment using zarinpal',
+            'mode' => filter_var(env('ZARINPAL_SANDBOX', false), FILTER_VALIDATE_BOOLEAN) ? 'sandbox' : 'normal', // can be normal, sandbox, zaringate
+            'merchantId' => filter_var(env('ZARINPAL_SANDBOX', false), FILTER_VALIDATE_BOOLEAN)
+                ? (env('ZARINPAL_SANDBOX_MERCHANT_ID') ?: env('ZARINPAL_MERCHANT_ID', ''))
+                : env('ZARINPAL_MERCHANT_ID', ''),
+            'callbackUrl' => env('ZARINPAL_CALLBACK_URL', '/payment/callback'),
+            'description' => 'payment in ' . config('app.name'),
             'currency' => 'T', //Can be R, T (Rial, Toman)
         ],
         'zibal' => [

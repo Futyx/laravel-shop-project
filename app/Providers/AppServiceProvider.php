@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\View;
+use App\Services\SeoService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +27,13 @@ class AppServiceProvider extends ServiceProvider
         });
           Blade::directive('persian', function ($expression) {
             return "<?php echo \\App\\Providers\\AppServiceProvider::convertNumberToFa($expression); ?>";
+        });
+
+        // Share default SEO data with all views
+        View::composer('*', function ($view) {
+            if (!isset($view->getData()['seo'])) {
+                $view->with('defaultSeo', (new SeoService()));
+            }
         });
     }
     

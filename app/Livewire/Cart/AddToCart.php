@@ -23,6 +23,15 @@ class AddToCart extends Component
         }
         $this->loadCart();
     }
+
+    #[On('update-cart-quantity')]
+    public function updateQuantity(int $productId, int $newQuantity): void
+    {
+        // Only update if it's for this product
+        if ($productId === $this->productId) {
+            $this->quantity = $newQuantity;
+        }
+    }
     public function add(): void
     {
         $this->busy = true;

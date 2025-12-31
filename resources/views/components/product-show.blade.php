@@ -1,38 +1,76 @@
 @props(['product'])
 
+<article class="mb-24 m-auto" itemscope itemtype="https://schema.org/Product">
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb" class="m-4">
+        <ol class="flex items-center space-x-2 space-x-reverse text-sm" itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="{{ url('/') }}" itemprop="item" class="text-blue-600 hover:text-blue-800">
+                    <span itemprop="name">خانه</span>
+                </a>
+                <meta itemprop="position" content="1">
+            </li>
+            <li class="mx-2">/</li>
+            @if($product->category)
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span itemprop="name">{{ $product->category->name }}</span>
+                <meta itemprop="position" content="2">
+            </li>
+            <li class="mx-2">/</li>
+            @endif
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span itemprop="name">{{ $product->title }}</span>
+                <meta itemprop="position" content="{{ $product->category ? '3' : '2' }}">
+            </li>
+        </ol>
+    </nav>
 
-<div class=" mb-24  m-auto">
-
-    <div class="bg-blue-400">خانه/{{ $product->category->name }}</div>
-    <div class="lg:flex  bg-red-300 m-1 ">
-        <div class="lg:flex  bg-red-500 lg:w-1/3">
-            <div>
-                <img src="{{ $product->getFirstImageUrl() }}" alt="{{ $product->title }}" class="w-full">
+    <div class="lg:flex gap-4 m-1 px-2">
+        <div class="lg:w-1/3 mb-4 lg:mb-0">
+            <div class="w-full">
+                <img 
+                    src="{{ $product->getFirstImageUrl() }}" 
+                    alt="{{ $product->title }} - چیزمارت" 
+                    title="{{ $product->title }}"
+                    itemprop="image"
+                    class="w-full rounded-lg object-contain"
+                    loading="eager"
+                >
             </div>
-            <div class="h-24 bg-gray-600">
-            عکس ها
-                @foreach ($product->getMedia('images') as $media)
-                <img src="{{ $media->getUrl() }}" alt="{{ $product->title }}" class="border-2">
+            @if($product->hasImages() && $product->getMedia('product_images')->count() > 1)
+            <div class="flex gap-2 mt-4 overflow-x-auto pb-2" role="list" aria-label="گالری تصاویر محصول">
+                @foreach ($product->getMedia('product_images') as $media)
+                <img 
+                    src="{{ $media->getUrl('thumb') }}" 
+                    alt="{{ $product->title }} - تصویر {{ $loop->iteration }}" 
+                    title="{{ $product->title }}"
+                    class="border-2 border-gray-300 rounded cursor-pointer hover:border-blue-500 transition min-w-[80px] h-20 object-cover"
+                    loading="lazy"
+                    role="listitem"
+                >
                 @endforeach
             </div>
+            @endif
         </div>
-        <div class="md:flex md:justify-between   ">
-            <div class="mt-6 mx-2 ">
-                <div class="text-red-600 border-r-4 font-seminbold border-red-600 pr-1">{{ $product->title }}</div>
-                <div class="mt-4  text-sm">{{ $product->description }}</div>
+        <div class="lg:w-2/3 flex flex-col lg:flex-row lg:justify-between gap-4">
+            <div class="flex-1 mt-4 lg:mt-6 mx-2">
+                <h1 class="text-red-600 border-r-4 font-semibold border-red-600 pr-1 text-xl sm:text-2xl mb-4" itemprop="name">{{ $product->title }}</h1>
+                <div class="mt-4 text-sm leading-relaxed" itemprop="description">{{ $product->description }}</div>
             </div>
-            <div class="bg-gray-100 mt-4 lg:mr-auto border p-4 rounded-lg border-gray-300 md:w-1/2 md:mx-2 lg:max-w-44 ">
-                <div class="text-left text-xl font-semibold">
+            <div class="bg-gray-100 mt-4 lg:mt-0 border p-4 rounded-lg border-gray-300 w-full lg:w-auto lg:max-w-xs lg:flex-shrink-0" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                <div class="text-left text-xl font-semibold mb-4">
+                    <meta itemprop="price" content="{{ $product->price }}">
+                    <meta itemprop="priceCurrency" content="IRR">
+                    <meta itemprop="availability" content="https://schema.org/InStock">
                     <span>@rial($product->price)</span><span class="mr-2 font-extrabold">تومان</span>
-
                 </div>
-                <div class="flex gap-3 my-4 items-center lg:block">
+                <div class="flex flex-col gap-3">
                     <div>
-                        @livewire('counter')
+                        @livewire('counter', ['productId' => $product->id, 'initialQuantity' => 1], key('product-counter-' . $product->id))
                     </div>
-                    <button class="bg-blue-700 lg:mt-2  md:text-[14px] items-center text-white py-2 w-full rounded-md text-[16px] font-semibold">افزودن به سبد خرید</button>
-
+                    @livewire('cart.add-to-cart', ['productId' => $product->id], key('product-add-' . $product->id))
                 </div>
             </div>
         </div>
     </div>
+</article>
