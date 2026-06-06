@@ -113,3 +113,4 @@ chown -R www-data:www-data storage bootstrap/cache
 5. Verify sitemap accessibility
 6. Check robots.txt
 
+

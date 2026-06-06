@@ -13,6 +13,7 @@ class PaymentController extends Controller
 {
     public function pay(Order $order)
     {
+        // dd($order->id, $order->total_amount, $order->payment_status);
         try {
             $amount = (int) $order->total_amount;
 

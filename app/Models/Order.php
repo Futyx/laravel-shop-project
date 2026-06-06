@@ -21,6 +21,9 @@ class Order extends Model
         'email', 
         'transaction_id',
         'tracking_code',
+        'shipping_address',
+        'shipping_phone',
+        'postal_code',
     ];
     public static function generateTrackingCode()
     {

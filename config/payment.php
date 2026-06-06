@@ -334,7 +334,7 @@ return [
             'merchantId' => filter_var(env('ZARINPAL_SANDBOX', false), FILTER_VALIDATE_BOOLEAN)
                 ? (env('ZARINPAL_SANDBOX_MERCHANT_ID') ?: env('ZARINPAL_MERCHANT_ID', ''))
                 : env('ZARINPAL_MERCHANT_ID', ''),
-            'callbackUrl' => env('ZARINPAL_CALLBACK_URL', '/payment/callback'),
+            'callbackUrl' => env('ZARINPAL_CALLBACK_URL'),
             'description' => 'payment in ' . config('app.name'),
             'currency' => 'T', //Can be R, T (Rial, Toman)
         ],

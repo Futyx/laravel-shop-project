@@ -78,13 +78,10 @@
             <span class="text-red-600 ">@rial($total+120000)<span class="  mr-2">تومان</span></span>
         </div>
 
-        <div class="w-full mt-2 bg-blue-600 text-sm  font-semibold text-white py-2 rounded hover:bg-blue-700 transition duration-150">
-            <form action="{{ route('order.store') }}" method="POST">
-                @csrf
-                <button type="submit" class="  w-full  transition duration-300">
-                    پرداخت
-                </button>
-            </form>
+        <div class="w-full mt-2">
+            <a href="{{ route('checkout') }}" class="block bg-blue-600 text-sm font-semibold text-white py-2 rounded hover:bg-blue-700 transition duration-150 text-center">
+                ادامه به تسویه حساب
+            </a>
         </div>
 
     </div>

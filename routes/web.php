@@ -34,6 +34,7 @@ Route::get('/', [HomeController::class, 'show']);
 // Cart
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::get('/checkout', \App\Livewire\Checkout::class)->name('checkout');
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 
 //Pages

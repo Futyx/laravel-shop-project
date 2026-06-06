@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Carbon\Carbon;
 
 class OrderResource extends Resource
 {
@@ -62,6 +63,27 @@ class OrderResource extends Resource
                         Forms\Components\Textarea::make('description')
                             ->label('توضیحات سفارش')
                             ->columnSpanFull(),
+
+                        Forms\Components\Textarea::make('shipping_address')
+                            ->label('آدرس ارسال')
+                            ->rows(3)
+                            ->columnSpanFull(),
+
+                        Forms\Components\TextInput::make('shipping_phone')
+                            ->label('شماره تماس ارسال')
+                            ->tel(),
+
+                        Forms\Components\TextInput::make('postal_code')
+                            ->label('کد پستی')
+                            ->maxLength(10),
+
+                        Forms\Components\TextInput::make('tracking_code')
+                            ->label('کد پیگیری')
+                            ->disabled(),
+
+                        Forms\Components\TextInput::make('transaction_id')
+                            ->label('شناسه تراکنش')
+                            ->disabled(),
                     ])->columns(2),
             ]);
     }
@@ -105,8 +127,16 @@ class OrderResource extends Resource
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('تاریخ ثبت')
-                    ->dateTime('Y/m/d H:i')
+                    ->formatStateUsing(fn ($state) => self::toJalali($state))
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('tracking_code')
+                    ->label('کد پیگیری')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('shipping_phone')
+                    ->label('تماس')
+                    ->searchable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -126,8 +156,48 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\OrderItemsRelationManager::class,
         ];
+    }
+
+    /**
+     * Convert Gregorian date to Jalali (Persian) date format
+     * Note: This is a simplified version. For accurate conversion, install morilog/jalali package
+     */
+    protected static function toJalali($date): string
+    {
+        if (!$date) {
+            return '-';
+        }
+
+        try {
+            $carbon = Carbon::parse($date);
+            
+            // Convert to Jalali year (approximate - subtract 621-622 years)
+            $gregorianYear = (int) $carbon->format('Y');
+            $gregorianMonth = (int) $carbon->format('m');
+            $gregorianDay = (int) $carbon->format('d');
+            
+            // Basic conversion (for accurate conversion, use morilog/jalali)
+            $jalaliYear = $gregorianYear - 621;
+            if ($gregorianMonth <= 3 || ($gregorianMonth == 3 && $gregorianDay < 21)) {
+                $jalaliYear -= 1;
+            }
+            
+            // Format: YYYY/MM/DD HH:MM
+            return sprintf(
+                '%d/%02d/%02d %02d:%02d',
+                $jalaliYear,
+                $carbon->format('m'),
+                $carbon->format('d'),
+                $carbon->format('H'),
+                $carbon->format('i')
+            );
+        } catch (\Exception $e) {
+            return $date instanceof \DateTimeInterface 
+                ? $date->format('Y/m/d H:i') 
+                : (string) $date;
+        }
     }
 
     public static function getPages(): array

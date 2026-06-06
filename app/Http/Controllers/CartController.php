@@ -15,7 +15,7 @@ class CartController extends Controller
         $cart = $cartService->getDetails();
 
         $items       = $cart['items'];      
-        $totalAmount = $cart['totalAmount'];
+        // $totalAmount = $cart['totalAmount'];
 
         $total = $items->sum('subtotal');
 
